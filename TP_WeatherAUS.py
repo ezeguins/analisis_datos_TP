@@ -12,6 +12,7 @@ import seaborn as sns
 import pandas as pd
 # Se ignoran los "FutureWarnings" molestos
 import warnings
+from sklearn.linear_model import LinearRegression
 warnings.simplefilter(action='ignore', category=FutureWarning) 
 
 
@@ -110,7 +111,31 @@ def normal(ds):
          dsscal_ = dsscal_.drop(column, 1)
 
       k=k+1
-   return ds 
+   return ds
+
+
+# Multiple Imputation by Chained Equations (MICE)
+
+def impute_column(df, col_to_predict, feature_columns):
+    df3 = df.copy()
+    for column in df3[feature_columns].columns:
+        df3.loc[df3[column].isna(), column] = df3[column].mean()
+
+        
+    nan_rows = np.where(np.isnan(df3[col_to_predict]))
+    all_rows = np.arange(0,len(df3))
+    train_rows_idx = np.argwhere(~np.isin(all_rows,nan_rows)).ravel()
+    pred_rows_idx =  np.argwhere(np.isin(all_rows,nan_rows)).ravel()
+    print(len(train_rows_idx))
+    print(len(pred_rows_idx))
+    X_train,y_train = df3[feature_columns].iloc[train_rows_idx],df3[col_to_predict].iloc[train_rows_idx]
+    X_pred = df3[feature_columns].iloc[pred_rows_idx]
+
+    model = LinearRegression()
+    model.fit(X_train,y_train)
+    #print(X_pred.values)
+    df3[col_to_predict].iloc[pred_rows_idx] = model.predict(X_pred.values)#.reshape(1,-1))
+    return df3
        
 
 
