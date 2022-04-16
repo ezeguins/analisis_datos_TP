@@ -1,0 +1,101 @@
+# se aplica mice a todas las columnas a imputar
+#direccion y velocidad de viento
+
+col_to_impute = 'WindGustDir'
+print('Media de la variable previo a la imputación {}: {}'.format(col_to_impute, np.mean(X_train_[col_to_impute])))
+feature_cols = ['WindDir9am',"WindDir3pm"]
+datasetIMP_ = TP.impute_column(X_train_, col_to_impute, feature_cols)
+print('Media de la variable posterior a la imputación {}: {}'.format(col_to_impute, np.mean(datasetIMP_[col_to_impute])))
+
+ERROR
+
+
+__________________________________________________________________________________________________________________
+
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-334-0bfba5fa4453> in <module>
+      3 
+      4 col_to_impute = 'WindGustDir'
+----> 5 print('Media de la variable previo a la imputación {}: {}'.format(col_to_impute, np.mean(X_train_[col_to_impute])))
+      6 feature_cols = ['WindDir9am',"WindDir3pm"]
+      7 datasetIMP_ = TP.impute_column(X_train_, col_to_impute, feature_cols)
+
+<__array_function__ internals> in mean(*args, **kwargs)
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\numpy\core\fromnumeric.py in mean(a, axis, dtype, out, keepdims, where)
+   3436             pass
+   3437         else:
+-> 3438             return mean(axis=axis, dtype=dtype, out=out, **kwargs)
+   3439 
+   3440     return _methods._mean(a, axis=axis, dtype=dtype,
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\generic.py in mean(self, axis, skipna, level, numeric_only, **kwargs)
+  11116         )
+  11117         def mean(self, axis=None, skipna=None, level=None, numeric_only=None, **kwargs):
+> 11118             return NDFrame.mean(self, axis, skipna, level, numeric_only, **kwargs)
+  11119 
+  11120         # pandas\core\generic.py:10924: error: Cannot assign to a method
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\generic.py in mean(self, axis, skipna, level, numeric_only, **kwargs)
+  10724 
+  10725     def mean(self, axis=None, skipna=None, level=None, numeric_only=None, **kwargs):
+> 10726         return self._stat_function(
+  10727             "mean", nanops.nanmean, axis, skipna, level, numeric_only, **kwargs
+  10728         )
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\generic.py in _stat_function(self, name, func, axis, skipna, level, numeric_only, **kwargs)
+  10709         if level is not None:
+  10710             return self._agg_by_level(name, axis=axis, level=level, skipna=skipna)
+> 10711         return self._reduce(
+  10712             func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  10713         )
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\series.py in _reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+   4180                 )
+   4181             with np.errstate(all="ignore"):
+-> 4182                 return op(delegate, skipna=skipna, **kwds)
+   4183 
+   4184     def _reindex_indexer(self, new_index, indexer, copy):
+  4180                 )
+   4181             with np.errstate(all="ignore"):
+-> 4182                 return op(delegate, skipna=skipna, **kwds)
+   4183 
+   4184     def _reindex_indexer(self, new_index, indexer, copy):
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\nanops.py in _f(*args, **kwargs)
+     71             try:
+     72                 with np.errstate(invalid="ignore"):
+---> 73                     return f(*args, **kwargs)
+     74             except ValueError as e:
+     75                 # we want to transform an object array
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\nanops.py in f(values, axis, skipna, **kwds)
+    133                     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    134             else:
+--> 135                 result = alt(values, axis=axis, skipna=skipna, **kwds)
+    136 
+    137             return result
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\nanops.py in new_func(values, axis, skipna, mask, **kwargs)
+    392             mask = isna(values)
+    393 
+--> 394         result = func(values, axis=axis, skipna=skipna, mask=mask, **kwargs)
+    395 
+    396         if datetimelike:
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\pandas\core\nanops.py in nanmean(values, axis, skipna, mask)
+   631 
+    632     count = _get_counts(values.shape, mask, axis, dtype=dtype_count)
+--> 633     the_sum = _ensure_numeric(values.sum(axis, dtype=dtype_sum))
+    634 
+    635     if axis is not None and getattr(the_sum, "ndim", False):
+
+~\AppData\Local\Programs\Python\Python38\lib\site-packages\numpy\core\_methods.py in _sum(a, axis, dtype, out, keepdims, initial, where)
+     46 def _sum(a, axis=None, dtype=None, out=None, keepdims=False,
+     47          initial=_NoValue, where=True):
+---> 48     return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+     49 
+     50 def _prod(a, axis=None, dtype=None, out=None, keepdims=False,
+
+TypeError: can only concatenate str (not "int") to str
