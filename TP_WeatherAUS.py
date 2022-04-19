@@ -158,7 +158,7 @@ def impute_column_int(df, col_to_predict, feature_columns):
     df3[col_to_predict].iloc[pred_rows_idx] = np.int8(model.predict(X_pred.values))#.reshape(1,-1))
     return df3
 
-# In[ ]:
+
 
 
 
