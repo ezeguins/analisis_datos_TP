@@ -93,25 +93,29 @@ def geoloc(ds):
 
 
 #definimos encoder y normalizamos los datos (menos la fecha), generamos otra tabla:
-def normal(ds):
-   import sklearn.preprocessing as preprocessing
+def normal_st(ds):
    from sklearn.preprocessing import StandardScaler
    ss = StandardScaler()
-   enc = preprocessing.OrdinalEncoder()
    dsscal_=ds.copy()
    k=0
 
    for column in ds:
-      if np.dtype(np.dtype(ds[column])) == "object" and column not in ["Year","MonthDay"]:
-         dsscal_.insert(k, f'{column}_enc_scal', ss.fit_transform(enc.fit_transform(ds[column].values.reshape(-1, 1))))
-         dsscal_ = dsscal_.drop(column, 1)
-
-      elif column not in ["Year","MonthDay"]:
          dsscal_.insert(k, f'{column}_scal', ss.fit_transform(ds[column].values.reshape(-1, 1)))
          dsscal_ = dsscal_.drop(column, 1)
+         k=k+1
+   return dsscal_
 
-      k=k+1
-   return ds
+def normal_minmax(ds):
+        from sklearn.preprocessing import MinMaxScaler
+        ss = MinMaxScaler()
+        dsscal_=ds.copy()
+        k=0
+
+        for column in ds:
+            dsscal_.insert(k, f'{column}_scal', ss.fit_transform(ds[column].values.reshape(-1, 1)))
+            dsscal_ = dsscal_.drop(column, 1)
+            k=k+1
+        return dsscal_
 
 
 # Multiple Imputation by Chained Equations (MICE)
